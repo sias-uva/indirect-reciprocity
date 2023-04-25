@@ -1,0 +1,7 @@
+name = "IR"
+uuid = "868e5eac-1965-4918-a7a0-2c50dd7412dd"
+version = "0.0.1"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
