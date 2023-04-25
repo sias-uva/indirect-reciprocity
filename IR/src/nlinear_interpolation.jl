@@ -12,7 +12,7 @@ function lerp(M::SArray{NTuple{3,2},T}, (x, y, z)::SVector{3,S}) where {T,S}
     return lerp(SVector{2,R}(lerp(M[:, :, 1], SA[x, y]), lerp(M[:, :, 2], SA[x, y])), z)
 end
 
-# Generic case:
+# Generic case (should never be called as we have specialised methods for up to 3 dims):
 function lerp(M::SArray{NTuple{N,2},T}, v::SVector{N,S}) where {N,T,S}
     SubSA = SArray{NTuple{N - 1,2},T,N - 1,2^(N - 1)}
     R1 = SubSA(selectdim(M, N, 1))

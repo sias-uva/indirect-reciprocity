@@ -13,21 +13,21 @@ function memoize(foo::Function, n_outputs::Int)
     last_dx, last_dfdx = nothing, nothing
     function foo_i(i, x::T...) where {T<:Real}
         if T == Float64
-            if x != last_x || isnothing(last_f)
-                # println("Computing primal $foo at index $i")
+            @show last_x x
+            if x != last_x
+                println("Calculating primal for $i")
+                println("Primal value: ", foo(x...))
                 last_x, last_f = x, foo(x...)
             end
             return last_f[i]::T
         else
-            if x != last_dx || isnothing(last_dfdx)
-                # println("Computing dual $foo at index $i")
+            if x != last_dx
+                println("Calculating dual for $i")
+                println("Dual value: ", foo(x...))
                 last_dx, last_dfdx = x, foo(x...)
-                # @show last_dfdx
             end
             return last_dfdx[i]::T
         end
     end
-    @show foo last_x last_f
     return [(x...) -> foo_i(i, x...) for i in 1:n_outputs]
 end
-
