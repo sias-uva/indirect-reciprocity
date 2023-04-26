@@ -11,7 +11,7 @@ The average reputation of a member of the red or blue groups evolves over time. 
 
 ### What does the optimisation problem look like?
 
-Mathematically:
+#### Mathematically:
 
 $\max_x f(x, h(x))$
 
@@ -28,6 +28,8 @@ $h : \mathbb{R}^n \rightarrow \mathbb{R}^k$,
 $f : \mathbb{R}^n \times \mathbb{R}^k \rightarrow \mathbb{R}^m$,
 
 $g : \mathbb{R}^n \times \mathbb{R}^k \rightarrow \mathbb{R}^p$
+
+#### In context of this problem:
 
 Define $\mathbb{U}$ to be the interval $[0, 1]$, then $x \in \mathbb{R}^{15}$ is made up of:
 - Rate of mistakes of agents:
