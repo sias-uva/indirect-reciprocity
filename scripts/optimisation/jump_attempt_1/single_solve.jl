@@ -4,7 +4,7 @@ using Printf
 using JuMP
 using Ipopt
 
-include("jump_integration.jl")
+include("jump_integration_1.jl")
 
 # Globals:
 ## Social rules
@@ -19,12 +19,12 @@ pm_bound::Float64 = 0.5
 # Solver options:
 domain_eps::Float64 = 0.0001
 
-function build_model(norm, red_strategy, blue_strategy, benefit_sum_max, cost_sum_min, em_bound, pm_bound, domain_eps)
+begin
     # Initialise model with Ipopt
     model = Model(Ipopt.Optimizer)
 
     # Register our custom objective function and auxiliary functions useful for constraints
-    register(model, :avg_payoffs, 15, avg_payoeffs; autodiff=true)
+    register(model, :avg_payoffs, 15, avg_payoffs; autodiff=true)
     register(model, :payoff_red, 15, payoff_red; autodiff=true)
     register(model, :payoff_blue, 15, payoff_blue; autodiff=true)
 
@@ -76,7 +76,6 @@ function build_model(norm, red_strategy, blue_strategy, benefit_sum_max, cost_su
         end
         mod(i, 4)==3 && println()
     end
-
     
     # @NLconstraint(model, payoff_red(vars...) >= 0.6 * payoff_blue(vars...))
     # @NLconstraint(model, payoff_blue(vars...) >= 0.6 * payoff_red(vars...))
@@ -90,3 +89,21 @@ function build_model(norm, red_strategy, blue_strategy, benefit_sum_max, cost_su
         set_optimizer_attribute(model, "max_iter", 4000) # The solver can take a LOT of iterations before it finds an optimal solution
     end
 end
+
+unset_silent(model)
+optimize!(model)
+
+summarise_solution(model, vars)
+both_payoffs(value.(vars)...)
+
+ESS_constraint(value.(vars)...)
+# ESS_constraint(value(pR), (2,2,1,1)..., value.(mistakes)...)
+
+payoff_red(value.(vars)...)
+payoff_red_mutant_13(value.(vars)...)
+
+payoff_blue(value.(vars)...)
+payoff_blue_mutant_13(value.(vars)...)
+
+(48.616 * (2^2^2)*(2^2^3))/1000 # ms
+199/60
