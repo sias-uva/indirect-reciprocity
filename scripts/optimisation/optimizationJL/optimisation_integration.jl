@@ -103,5 +103,5 @@ end
 
 prob = OptimizationProblem(f, x0, nss_combination; lb, ub, lcons, ucons, sense = MaxSense)
 # solve(prob, IPNewton())
-sol = solve(prob, Ipopt.Optimizer())
+sol = solve(prob, Ipopt.Optimizer()) # Always returns 99999? Completely disregarding the bounds on variables.
 sol[:cost_blue]

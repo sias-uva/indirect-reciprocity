@@ -5,37 +5,36 @@ function unpack_x(xs)
     jem, jpm... = xs[6:9]
     rem, rpm... = xs[10:12]
     bem, bpm... = xs[13:15]
-    # reputations = xs[16:17]
     return prop_red, utilities, jem, SA[jpm...], rem, SA[rpm...], bem, SA[bpm...]
 end
 
-function avg_payoffs(xs...)
+
+function avg_payoffs(xs...; p)
     prop_red, utilities, jem, jpm, rem, rpm, bem, bpm = unpack_x(xs)
-    judge = Agent(norm, jem, jpm)
-    red = Agent(red_strategy, rem, rpm)
-    blue = Agent(blue_strategy, bem, bpm)
-    R★, B★ = stationary_incumbent_reputations(judge, red, blue, pR)
+    judge = Agent(p.norm, jem, jpm)
+    red = Agent(p.red_strategy, rem, rpm)
+    blue = Agent(p.blue_strategy, bem, bpm)
+    R★, B★ = stationary_incumbent_reputations(judge, red, blue, prop_red)
     avg = sum(incumbent_payoffs(red, blue, R★, B★, prop_red, utilities)) / 2
     return avg
 end
 
 # Helper function
-function both_payoffs(xs...)
+function both_payoffs(xs...; p)
     prop_red, utilities, jem, jpm, rem, rpm, bem, bpm = unpack_x(xs)
-    judge = Agent(norm, jem, jpm)
-    red = Agent(red_strategy, rem, rpm)
-    blue = Agent(blue_strategy, bem, bpm)
-    R★, B★ = stationary_incumbent_reputations(judge, red, blue, pR)
+    judge = Agent(p.norm, jem, jpm)
+    red = Agent(p.red_strategy, rem, rpm)
+    blue = Agent(p.blue_strategy, bem, bpm)
+    R★, B★ = stationary_incumbent_reputations(judge, red, blue, prop_red)
     return incumbent_payoffs(red, blue, R★, B★, prop_red, utilities)
 end
 
-# Constraint
-function ESS_constraint(xs...)
+# Unused constraint
+function ESS_constraint(xs...; p)
     prop_red, utilities, jem, jpm, rem, rpm, bem, bpm = unpack_x(xs)
-    judge = Agent(norm, jem, jpm)
-    red = Agent(red_strategy, rem, rpm)
-    blue = Agent(blue_strategy, bem, bpm)
-    @show blue_strategy
+    judge = Agent(p.norm, jem, jpm)
+    red = Agent(p.red_strategy, rem, rpm)
+    blue = Agent(p.blue_strategy, bem, bpm)
     if is_ESS(judge, red, blue, prop_red, utilities)
         return true
     else
@@ -43,65 +42,35 @@ function ESS_constraint(xs...)
     end
 end
 
-function payoff_red(xs...)
+function payoff_incumbent_i(xs...; p, i_out)
     prop_red, utilities, jem, jpm, rem, rpm, bem, bpm = unpack_x(xs)
-    judge = Agent(norm, jem, jpm)
-    red = Agent(red_strategy, rem, rpm)
-    blue = Agent(blue_strategy, bem, bpm)
-    R★, B★ = stationary_incumbent_reputations(judge, red, blue, pR)
-    payoff_red, _ = incumbent_payoffs(red, blue, R★, B★, prop_red, utilities)
-    return payoff_red
+    judge = Agent(p.norm, jem, jpm)
+    red = Agent(p.red_strategy, rem, rpm)
+    blue = Agent(p.blue_strategy, bem, bpm)
+    R★, B★ = stationary_incumbent_reputations(judge, red, blue, prop_red)
+    ip = incumbent_payoffs(red, blue, R★, B★, prop_red, utilities)
+    return ip[i_out]
 end
 
-function payoff_blue(xs...)
+function mutant_payoff_i(xs...; p, mutant_rule, out_i)
     prop_red, utilities, jem, jpm, rem, rpm, bem, bpm = unpack_x(xs)
-    judge = Agent(norm, jem, jpm)
-    red = Agent(red_strategy, rem, rpm)
-    blue = Agent(blue_strategy, bem, bpm)
-    R★, B★ = stationary_incumbent_reputations(judge, red, blue, pR)
-    _, payoff_blue = incumbent_payoffs(red, blue, R★, B★, prop_red, utilities)
-    return payoff_blue
+    judge = Agent(p.norm, jem, jpm)
+    red = Agent(p.red_strategy, rem, rpm)
+    blue = Agent(p.blue_strategy, bem, bpm)
+    R★, B★ = stationary_incumbent_reputations(judge, red, blue, prop_red)
+    
+    red_mutant = Agent(mutant_rule, rem, rpm)
+    blue_mutant = Agent(mutant_rule, bem, bpm)
+    RM★, BM★ = stationary_mutant_reputations(judge, red, blue, R★, B★, prop_red)
+    payoff_mutants = mutant_payoffs(red, blue, red_mutant, blue_mutant, R★, B★, RM★, BM★, prop_red, utilities)
+    return payoff_mutants[out_i]
 end
 
-for i in 0:15
-    mr = Strategy(digits(i, base=2, pad=4))
-    red_name = Symbol(string("payoff_red_mutant_", i))
-    blue_name = Symbol(string("payoff_blue_mutant_", i))
-    mutant_rule = SVector{4,Bool}((false, false, false, false))
-    @eval begin
-        function $(red_name)(xs...)
-            prop_red, utilities, jem, jpm, rem, rpm, bem, bpm = unpack_x(xs)
-            judge = Agent(norm, jem, jpm)
-            red = Agent(red_strategy, rem, rpm)
-            blue = Agent(blue_strategy, bem, bpm)
-            R★, B★ = stationary_incumbent_reputations(judge, red, blue, pR)
-            mutant_rule = $(mr)
-            red_mutant = Agent(mutant_rule, rem, rpm)
-            blue_mutant = Agent(mutant_rule, bem, bpm)
-            RM★, BM★ = stationary_mutant_reputations(judge, red, blue, R★, B★, prop_red)
-            payoff_red_mutant, _ = mutant_payoffs(red, blue, red_mutant, blue_mutant, R★, B★, RM★, BM★, prop_red, utilities)
-            return payoff_red_mutant
-        end
-        function $(blue_name)(xs...)
-            prop_red, utilities, jem, jpm, rem, rpm, bem, bpm = unpack_x(xs)
-            judge = Agent(norm, jem, jpm)
-            red = Agent(red_strategy, rem, rpm)
-            blue = Agent(blue_strategy, bem, bpm)
-            R★, B★ = stationary_incumbent_reputations(judge, red, blue, pR)
-            mutant_rule = $(mr)
-            red_mutant = Agent(mutant_rule, rem, rpm)
-            blue_mutant = Agent(mutant_rule, bem, bpm)
-            RM★, BM★ = stationary_mutant_reputations(judge, red, blue, R★, B★, prop_red)
-            _, payoff_blue_mutant = mutant_payoffs(red, blue, red_mutant, blue_mutant, R★, B★, RM★, BM★, prop_red, utilities)
-            return payoff_blue_mutant
-        end
-    end
-end
 
-function summarise_solution(model, values)
-    pR, utilities, mistakes = values[1], values[2:5], values[6:15]
+function summarise_solution(model, values; p)
+    prop_red, utilities, mistakes = values[1], values[2:5], values[6:15]
     ov = objective_value(model)
-    pr = value(pR)
+    pr = value(prop_red)
     ut = value.(utilities)
     ms = value.(mistakes)
     r(v) = round(v; sigdigits=3)
@@ -109,17 +78,17 @@ function summarise_solution(model, values)
     println("Objective value: $ov")
     println("")
     println("Judge:")
-    println("- Norm: $norm")
+    println("- Norm: $(p.norm)")
     @printf "- ε: %.2f\n" r(ms[1])
     @printf "- α: %.2f,\n     %.2f,\n     %.2f\n" r.(ms[2:4])...
     println("")
     println("Majority:")
-    println("- Strategy: $red_strategy")
+    println("- Strategy: $(p.red_strategy)")
     @printf "- ε: %.2f\n" r(ms[5])
     @printf "- α: %.2f,\n     %.2f\n" r.(ms[6:7])...
     println("")
     println("Minority:")
-    println("- Strategy: $blue_strategy")
+    println("- Strategy: $(p.blue_strategy)")
     @printf "- ε: %.2f\n" r(ms[8])
     @printf "- α: %.2f,\n     %.2f\n" r.(ms[9:10])...
     println("")
@@ -127,7 +96,7 @@ function summarise_solution(model, values)
     println("- Majority proportion: $(r(pr))")
     println("- Benefit/cost:")
     println("  - Benefit maj: $(r(ut[1]))")
-    println("  - Benefit min: $(r(ut[2]))")
+    println("  - Benefit minority: $(r(ut[2]))")
     println("  - Cost maj: $(r(ut[3]))")
-    println("  - Cost min: $(r(ut[4]))")
+    println("  - Cost minority: $(r(ut[4]))")
 end
