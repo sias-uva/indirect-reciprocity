@@ -33,7 +33,7 @@ $f : \mathbb{R}^n \times \mathbb{R}^k \rightarrow \mathbb{R}^m$,
 
 $g : \mathbb{R}^n \times \mathbb{R}^k \rightarrow \mathbb{R}^p$
 
-Define $\mathbb{U}$ to be the interval $[0, 1]$, then $x \in \mathbb{R}^15$ is made up of:
+Define $\mathbb{U}$ to be the interval $[0, 1]$, then $x \in \mathbb{R}^{15}$ is made up of:
 - Rate of mistakes of agents:
     - Perception mistakes:
         - $\alpha_J \in \mathbb{U}^3$ (Judge)
