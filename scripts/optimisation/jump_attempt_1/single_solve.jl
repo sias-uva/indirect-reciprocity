@@ -66,32 +66,6 @@ begin
     # Add our non-linear objective function
     @NLobjective(model, Max, payoff_red(vars...) + payoff_blue(vars...)) # Maximise average payoffs...
 
-    
-    # for i in 0:15
-    #     print(i)
-    #     # We do a really nasty metaprogramming trick to make this work. Please don't do this ever.
-    #     red_name = Symbol(string("payoff_red_mutant_", i))
-    #     blue_name = Symbol(string("payoff_blue_mutant_", i))
-    #     @eval begin
-    #         # Skip registering the constraint if the mutant strategy is the same for that group.
-    #         if $red_i != $i 
-    #             register(model, Symbol(string("payoff_red_mutant_", $i)), 15, $(red_name); autodiff=true)
-    #             @NLconstraint(model, payoff_red(vars...) >= domain_eps + $(red_name)(vars...))
-    #             print(".")
-    #         else
-    #             print("r")
-    #         end
-    #         if $blue_i != $i
-    #             register(model, Symbol(string("payoff_blue_mutant_", $i)), 15, $(blue_name); autodiff=true)
-    #             @NLconstraint(model, payoff_blue(vars...) >= domain_eps + $(blue_name)(vars...))
-    #             print(".")
-    #         else
-    #             print("b")
-    #         end
-    #     end
-    #     mod(i, 4)==3 && println()
-    # end
-
     # ...subject to the constraint that the incumbent payoffs are larger or equal to
     # any possible mutant.
     println("Registering constraints 0 to 15")
@@ -112,10 +86,9 @@ begin
         end
     end
 
-    
-    
-    # @NLconstraint(model, payoff_red(vars...) >= 0.6 * payoff_blue(vars...))
-    # @NLconstraint(model, payoff_blue(vars...) >= 0.6 * payoff_red(vars...))
+    # Constraint on fairness
+    @NLconstraint(model, payoff_red(vars...) >= 0.6 * payoff_blue(vars...))
+    @NLconstraint(model, payoff_blue(vars...) >= 0.6 * payoff_red(vars...))
 
     # Constrain the utilities (although some are superfluous)
     begin
@@ -141,36 +114,16 @@ optimize!(model)
 summarise_solution(model, vars; p)
 both_payoffs(value.(vars)...; p)
 
-# Do any mutants invade?
-ESS_constraint(value.(vars)...; p)
 
-# ESS_constraint(value(pR), (2,2,1,1)..., value.(mistakes)...)
 
+# A few tests to see if things are as expected
 # x0 = [0.9, 2.0, 2, 1, 1, 0.01, 0.00, 0.00, 0.00, 0.01, 0.00, 0.00, 0.01, 0.00, 0.00]
 x0 = value.(vars)
+
+# Do any mutants invade?
+ESS_constraint(x0...; p)
+
 payoff_red(x0...)
 for i in 0:15
     println(mutant_payoff_i(x0...; p, mutant_rule=iStrategy(i), out_i=1))
 end
-payoff_blue(x0...) >= payoff_blue_mutant_0(x0...)
-
-payoff_blue(x0...)
-payoff_blue_mutant_12(x0...)
-
-
-
-payoff_red(x0...)
-payoff_red_mutant_0(x0...)
-payoff_red_mutant_13(x0...)
-
-payoff_blue(x0...)
-payoff_blue_mutant_13(x0...)
-
-(48.616 * (2^2^2)*(2^2^3))/1000 # ms
-199/60
-
-
-length(x0)
-both_payoffs(x0...)
-payoff_red(x0...)
-payoff_blue(x0...)
