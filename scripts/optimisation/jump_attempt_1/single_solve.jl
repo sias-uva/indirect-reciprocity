@@ -17,7 +17,7 @@ em_bound::Float64 = 0.1
 pm_bound::Float64 = 0.1
 
 # Solver options:
-domain_eps::Float64 = 0.00
+domain_eps::Float64 = 0.001
 
 p = (;
     norm,
@@ -40,14 +40,16 @@ begin
     model = Model(Ipopt.Optimizer)
 
     # Register our custom objective function and auxiliary functions useful for constraints
-    register(model, :avg_payoffs, 15, avg_payoffs; autodiff=true)
+    # register(model, :avg_payoffs, 15, (xs...) -> avg_payoffs(); autodiff=true)
+    payoff_red = (args...) -> payoff_incumbent_i(args...; p=p, i_out=1)
+    payoff_blue = (args...) -> payoff_incumbent_i(args...; p=p, i_out=2)
     register(model, :payoff_red, 15, payoff_red; autodiff=true)
     register(model, :payoff_blue, 15, payoff_blue; autodiff=true)
 
     # Add decision variables and their domains
     @variable(model, 0.5 <= pR <= 0.9) # Size of the majority
 
-    @variable(model, 0 <= benefits[1:2] <= benefit_max) # Benefits
+    @variable(model, domain_eps <= benefits[1:2] <= benefit_max) # Benefits
     @variable(model, cost_min <= costs[1:2] <= Inf) # Costs
 
     @variable(model, domain_eps <= judge_em <= em_bound) # Rates of execution mistakes of judge
@@ -59,10 +61,10 @@ begin
     @variable(model, domain_eps <= blue_pm[1:2] <= pm_bound) # Rates of perception mistakes of agents
 
     # @variable(model, domain_eps <= mistakes[1:10] <= 0.005, start = 0.01) # Rates of mistakes of judge and agents
-    vars = (pR, utilities..., judge_em, judge_pm..., red_em, red_pm..., blue_em, blue_pm...,) # Put them all in a single variable
+    vars = (pR, benefits..., costs..., judge_em, judge_pm..., red_em, red_pm..., blue_em, blue_pm...,) # Put them all in a single variable
 
     # Add our non-linear objective function
-    @NLobjective(model, Max, avg_payoffs(vars...)) # Maximise average payoffs...
+    @NLobjective(model, Max, payoff_red(vars...) + payoff_blue(vars...)) # Maximise average payoffs...
 
     
     # for i in 0:15
@@ -100,10 +102,14 @@ begin
         mutant_rule = Strategy(digits(i, base=2, pad=4))
         red_name = Symbol(string("payoff_red_mutant_", i))
         blue_name = Symbol(string("payoff_blue_mutant_", i))
-        register(model, red_name, 15, (args...) -> mutant_payoff_i(args...; mutant_rule, out_i=1); autodiff=true)
-        register(model, blue_name, 15, (args...) -> mutant_payoff_i(args...; mutant_rule, out_i=2); autodiff=true)
-        @eval @NLconstraint(model, payoff_red(vars...) >= domain_eps + $(red_name)(vars...))
-        @eval @NLconstraint(model, payoff_red(vars...) >= domain_eps + $(blue_name)(vars...))
+        register(model, red_name, 15, (args...) -> mutant_payoff_i(args...; p, mutant_rule, out_i=1); autodiff=true)
+        register(model, blue_name, 15, (args...) -> mutant_payoff_i(args...; p, mutant_rule, out_i=2); autodiff=true)
+        if i != red_i
+            @eval @NLconstraint(model, payoff_red(vars...) >= domain_eps + $(red_name)(vars...))
+        end
+        if i != blue_i
+            @eval @NLconstraint(model, payoff_red(vars...) >= domain_eps + $(blue_name)(vars...))
+        end
     end
 
     
@@ -121,10 +127,10 @@ begin
         @constraint(model, benefits[1] + benefits[2] <= benefit_sum_max)
         # Sum of costs must be greater than predetermined minimum
         @constraint(model, costs[1] + costs[2] >= cost_sum_min)
-
-        # @NLconstraint(model, cost_sum_min <= utilities[3] +  utilities[4])
-        @constraint(model, benefits[1] == benefits[2]) # Groups must have the same benefits...
-        @constraint(model, costs[1] == costs[2]) # ...and costs
+        # Groups must have the same benefits...
+        @constraint(model, benefits[1] == benefits[2])
+        # ...and costs
+        @constraint(model, costs[1] == costs[2]) 
         # set_optimizer_attribute(model, "max_iter", 4000) # The solver can take a LOT of iterations before it finds an optimal solution
     end
 end
@@ -132,36 +138,38 @@ end
 unset_silent(model)
 optimize!(model)
 
-summarise_solution(model, vars)
-both_payoffs(value.(vars)...)
+summarise_solution(model, vars; p)
+both_payoffs(value.(vars)...; p)
 
 # Do any mutants invade?
-ESS_constraint(value.(vars)...)
+ESS_constraint(value.(vars)...; p)
 
 # ESS_constraint(value(pR), (2,2,1,1)..., value.(mistakes)...)
 
-payoff_red(value.(vars)...) >= mutant_payoff_i(value.(vars)...; mutant_rule=iStrategy(0), out_i=1)
+# x0 = [0.9, 2.0, 2, 1, 1, 0.01, 0.00, 0.00, 0.00, 0.01, 0.00, 0.00, 0.01, 0.00, 0.00]
+x0 = value.(vars)
+payoff_red(x0...)
 for i in 0:15
-    println(mutant_payoff_i(value.(vars)...; mutant_rule=iStrategy(i), out_i=1))
+    println(mutant_payoff_i(x0...; p, mutant_rule=iStrategy(i), out_i=1))
 end
-payoff_blue(value.(vars)...) >= payoff_blue_mutant_0(value.(vars)...)
+payoff_blue(x0...) >= payoff_blue_mutant_0(x0...)
 
-payoff_blue(value.(vars)...)
-payoff_blue_mutant_12(value.(vars)...)
+payoff_blue(x0...)
+payoff_blue_mutant_12(x0...)
 
 
 
-payoff_red(value.(vars)...)
-payoff_red_mutant_0(value.(vars)...)
-payoff_red_mutant_13(value.(vars)...)
+payoff_red(x0...)
+payoff_red_mutant_0(x0...)
+payoff_red_mutant_13(x0...)
 
-payoff_blue(value.(vars)...)
-payoff_blue_mutant_13(value.(vars)...)
+payoff_blue(x0...)
+payoff_blue_mutant_13(x0...)
 
 (48.616 * (2^2^2)*(2^2^3))/1000 # ms
 199/60
 
-x0 = [0.9, 2.0, 2, 1, 1, 0.01, 0.00, 0.00, 0.00, 0.01, 0.00, 0.00, 0.01, 0.00, 0.00]
+
 length(x0)
 both_payoffs(x0...)
 payoff_red(x0...)

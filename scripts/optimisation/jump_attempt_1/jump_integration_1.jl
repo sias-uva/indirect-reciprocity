@@ -61,7 +61,7 @@ function mutant_payoff_i(xs...; p, mutant_rule, out_i)
     
     red_mutant = Agent(mutant_rule, rem, rpm)
     blue_mutant = Agent(mutant_rule, bem, bpm)
-    RM★, BM★ = stationary_mutant_reputations(judge, red, blue, R★, B★, prop_red)
+    RM★, BM★ = stationary_mutant_reputations(judge, red_mutant, blue_mutant, R★, B★, prop_red)
     payoff_mutants = mutant_payoffs(red, blue, red_mutant, blue_mutant, R★, B★, RM★, BM★, prop_red, utilities)
     return payoff_mutants[out_i]
 end
