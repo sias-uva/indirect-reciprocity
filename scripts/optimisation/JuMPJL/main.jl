@@ -33,7 +33,7 @@ p = (;
 )
 
 # Functions that depend on globals (eek)
-include("jump_integration_1.jl")
+include("jump_integration.jl")
 
 begin
     # Initialise model with Ipopt

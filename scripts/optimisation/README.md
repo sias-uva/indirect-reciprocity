@@ -65,4 +65,11 @@ In `scripts/optimisation` there are 6 attempts at implementing the mathematical 
 - One uses `Optimization.jl`
 - One uses `NLPModels.jl` and the unregistered `ObjConsNLPModels.jl`
 
+Current versions:
+- `JuMPJL` is the most recently updated version.
+- `NLPModelsJL` and `OptimizationJL` is the same thing using different packages. Could do with optimisation.
+
+Previous versions:
 `jump_attempt_0` uses the previous implementation of `IR` called `TinyIR`, and the rest use `IR`.
+`jump_attempt_2` was an early attempt at memoisation by declaring intermediate variables in JuMP.
+`jump_attempt_3` is a recent attempt at "vector-memoisation" using the ideas described in the docs for vector-valued custom functions.
