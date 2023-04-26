@@ -14,23 +14,14 @@ The average reputation of a member of the red or blue groups evolves over time. 
 Mathematically:
 
 $\max_x f(x, h(x))$
-
-subject to
-
-$g(x, h(x)) \geq 0$
-
-and
-
-$lb \leq x \leq ub$
+$\text{s.t. } g(x, h(x)) \geq 0$
+$\text{and } lb \leq x \leq ub$
 
 where
 
 $x \in \mathbb{R}^n$,
-
 $h : \mathbb{R}^n \rightarrow \mathbb{R}^k$,
-
 $f : \mathbb{R}^n \times \mathbb{R}^k \rightarrow \mathbb{R}^m$,
-
 $g : \mathbb{R}^n \times \mathbb{R}^k \rightarrow \mathbb{R}^p$
 
 Define $\mathbb{U}$ to be the interval $[0, 1]$, then $x \in \mathbb{R}^{15}$ is made up of:
