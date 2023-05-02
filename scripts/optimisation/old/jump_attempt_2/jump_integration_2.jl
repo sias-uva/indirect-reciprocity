@@ -6,7 +6,15 @@ function unpack_x(xs)
     rem, rpm... = xs[10:12]
     bem, bpm... = xs[13:15]
     reputations = xs[16:17]
-    return prop_red, utilities, jem, SA[jpm...], rem, SA[rpm...], bem, SA[bpm...], reputations
+    return prop_red,
+    utilities,
+    jem,
+    SA[jpm...],
+    rem,
+    SA[rpm...],
+    bem,
+    SA[bpm...],
+    reputations
 end
 
 function avg_payoffs(xs...)
@@ -79,8 +87,8 @@ function stationary_reps2(xs...)
     return stationary_mutant_reputations(judge, red, blue, R★, B★, prop_red)[2]
 end
 
-for i in 0:15
-    mr = Strategy(digits(i, base=2, pad=4))
+for i = 0:15
+    mr = Strategy(digits(i, base = 2, pad = 4))
     red_name = Symbol(string("payoff_red_mutant_", i))
     blue_name = Symbol(string("payoff_blue_mutant_", i))
     mutant_rule = SVector{4,Bool}((false, false, false, false))
@@ -95,7 +103,18 @@ for i in 0:15
             red_mutant = Agent(mutant_rule, rem, rpm)
             blue_mutant = Agent(mutant_rule, bem, bpm)
             RM★, BM★ = stationary_mutant_reputations(judge, red, blue, R★, B★, prop_red)
-            payoff_red_mutant, _ = mutant_payoffs(red, blue, red_mutant, blue_mutant, R★, B★, RM★, BM★, prop_red, utilities)
+            payoff_red_mutant, _ = mutant_payoffs(
+                red,
+                blue,
+                red_mutant,
+                blue_mutant,
+                R★,
+                B★,
+                RM★,
+                BM★,
+                prop_red,
+                utilities,
+            )
             return payoff_red_mutant
         end
         function $(blue_name)(xs...)
@@ -108,7 +127,18 @@ for i in 0:15
             red_mutant = Agent(mutant_rule, rem, rpm)
             blue_mutant = Agent(mutant_rule, bem, bpm)
             RM★, BM★ = stationary_mutant_reputations(judge, red, blue, R★, B★, prop_red)
-            _, payoff_blue_mutant = mutant_payoffs(red, blue, red_mutant, blue_mutant, R★, B★, RM★, BM★, prop_red, utilities)
+            _, payoff_blue_mutant = mutant_payoffs(
+                red,
+                blue,
+                red_mutant,
+                blue_mutant,
+                R★,
+                B★,
+                RM★,
+                BM★,
+                prop_red,
+                utilities,
+            )
             return payoff_blue_mutant
         end
     end
@@ -120,7 +150,7 @@ function summarise_solution(model, values)
     pr = value(pR)
     ut = value.(utilities)
     ms = value.(mistakes)
-    r(v) = round(v; sigdigits=3)
+    r(v) = round(v; sigdigits = 3)
     println("### Solution Summary ###")
     println("Objective value: $ov")
     println("")

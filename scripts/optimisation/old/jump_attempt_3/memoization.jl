@@ -27,5 +27,5 @@ function memoize(foo::Function, n_outputs::Int)
             return last_dfdx[i]::T
         end
     end
-    return [(x...) -> foo_i(i, x...) for i in 1:n_outputs]
+    return [(x...) -> foo_i(i, x...) for i = 1:n_outputs]
 end

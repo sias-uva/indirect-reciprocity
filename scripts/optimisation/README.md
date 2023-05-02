@@ -70,6 +70,5 @@ Current versions:
 - `NLPModelsJL` and `OptimizationJL` is the same thing using different packages. Could do with optimisation.
 
 Previous versions:
-`jump_attempt_0` uses the previous implementation of `IR` called `TinyIR`, and the rest use `IR`.
 `jump_attempt_2` was an early attempt at memoisation by declaring intermediate variables in JuMP.
 `jump_attempt_3` is a recent attempt at "vector-memoisation" using the ideas described in the docs for vector-valued custom functions.

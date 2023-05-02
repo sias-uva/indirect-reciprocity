@@ -1,6 +1,0 @@
-name = "TinyIR"
-uuid = "8d7208bb-417a-4046-8f4a-469efa86dcae"
-version = "0.0.1"
-
-[deps]
-StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"

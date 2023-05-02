@@ -1,7 +1,5 @@
 # Reputations
-function stationary_incumbent_reputations(
-    judge::Judge, red::Player, blue::Player, prop_red
-)
+function stationary_incumbent_reputations(judge::Judge, red::Player, blue::Player, prop_red)
     pR = prop_red # Rename for brevity
     JR(x, y) = judge(x, y, red(x, y))
     JB(x, y) = judge(x, y, blue(x, y))

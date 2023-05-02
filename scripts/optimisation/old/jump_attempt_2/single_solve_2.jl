@@ -7,7 +7,7 @@ using Ipopt
 # Globals:
 ## Social rules
 norm::Norm = iNorm(195)
-red_strategy::Strategy  = iStrategy(12)
+red_strategy::Strategy = iStrategy(12)
 blue_strategy::Strategy = iStrategy(12)
 benefit_sum_max::Int = 4 # Sum of each group's benefit
 cost_sum_min::Int = 2 # Sum of each group's costs
@@ -25,11 +25,11 @@ begin
     model = Model(Ipopt.Optimizer)
 
     # Register our custom objective function and auxiliary functions useful for constraints
-    register(model, :avg_payoffs, 17, avg_payoffs; autodiff=true)
-    register(model, :payoff_red, 17, payoff_red; autodiff=true)
-    register(model, :payoff_blue, 17, payoff_blue; autodiff=true)
-    register(model, :stationary_reps, 17, stationary_reps; autodiff=true)
-    register(model, :stationary_reps2, 17, stationary_reps2; autodiff=true)
+    register(model, :avg_payoffs, 17, avg_payoffs; autodiff = true)
+    register(model, :payoff_red, 17, payoff_red; autodiff = true)
+    register(model, :payoff_blue, 17, payoff_blue; autodiff = true)
+    register(model, :stationary_reps, 17, stationary_reps; autodiff = true)
+    register(model, :stationary_reps2, 17, stationary_reps2; autodiff = true)
 
     # Add decision variables and their domains
     @variable(model, 0.5 <= pR <= 0.9) # Size of the majority
@@ -47,7 +47,17 @@ begin
     @variable(model, 0 <= reputations[1:2] <= 1)
 
     # @variable(model, domain_eps <= mistakes[1:10] <= 0.005, start = 0.01) # Rates of mistakes of judge and agents
-    vars = (pR, utilities..., judge_em, judge_pm..., red_em, red_pm..., blue_em, blue_pm..., reputations...) # Put them all in a single variable
+    vars = (
+        pR,
+        utilities...,
+        judge_em,
+        judge_pm...,
+        red_em,
+        red_pm...,
+        blue_em,
+        blue_pm...,
+        reputations...,
+    ) # Put them all in a single variable
 
     # Add our non-linear objective function
     @NLobjective(model, Max, avg_payoffs(vars...)) # Maximise average payoffs...
@@ -58,31 +68,49 @@ begin
     red_i = @evalpoly(2, red_strategy...)
     blue_i = @evalpoly(2, blue_strategy...)
     @show red_i blue_i
-    for i in 0:15
+    for i = 0:15
         print(i)
         # We do a really nasty metaprogramming trick to make this work. Please don't do this ever.
         red_name = Symbol(string("payoff_red_mutant_", i))
         blue_name = Symbol(string("payoff_blue_mutant_", i))
         @eval begin
-            if $red_i != $i 
-                register(model, Symbol(string("payoff_red_mutant_", $i)), 17, $(red_name); autodiff=true)
-                @NLconstraint(model, payoff_red(vars...) >= domain_eps + $(red_name)(vars...))
+            if $red_i != $i
+                register(
+                    model,
+                    Symbol(string("payoff_red_mutant_", $i)),
+                    17,
+                    $(red_name);
+                    autodiff = true,
+                )
+                @NLconstraint(
+                    model,
+                    payoff_red(vars...) >= domain_eps + $(red_name)(vars...)
+                )
                 print(".")
             else
                 print("r")
             end
             if $blue_i != $i
-                register(model, Symbol(string("payoff_blue_mutant_", $i)), 17, $(blue_name); autodiff=true)
-                @NLconstraint(model, payoff_blue(vars...) >= domain_eps + $(blue_name)(vars...))
+                register(
+                    model,
+                    Symbol(string("payoff_blue_mutant_", $i)),
+                    17,
+                    $(blue_name);
+                    autodiff = true,
+                )
+                @NLconstraint(
+                    model,
+                    payoff_blue(vars...) >= domain_eps + $(blue_name)(vars...)
+                )
                 print(".")
             else
                 print("b")
             end
         end
-        mod(i, 4)==3 && println()
+        mod(i, 4) == 3 && println()
     end
 
-    
+
     # @NLconstraint(model, payoff_red(vars...) >= 0.6 * payoff_blue(vars...))
     # @NLconstraint(model, payoff_blue(vars...) >= 0.6 * payoff_red(vars...))
 
@@ -117,5 +145,5 @@ payoff_red_mutant_13(value.(vars)...)
 payoff_blue(value.(vars)...)
 payoff_blue_mutant_13(value.(vars)...)
 
-(48.616 * (2^2^2)*(2^2^3))/1000 # ms
-199/60
+(48.616 * (2^2^2) * (2^2^3)) / 1000 # ms
+199 / 60

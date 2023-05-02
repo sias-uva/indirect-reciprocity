@@ -48,10 +48,8 @@ function mutant_payoffs(
         benefit_red * p_receives(red, blue, red_mutant_rep, prop_red) -
         cost_red * p_donates(red_mutant, red_rep, blue_rep, prop_red)
     payoff_blue_mutant =
-        benefit_blue *
-        p_receives(blue, red, blue_mutant_rep, 1 - prop_red) -
-        cost_blue *
-        p_donates(blue_mutant, blue_rep, red_rep, 1 - prop_red)
+        benefit_blue * p_receives(blue, red, blue_mutant_rep, 1 - prop_red) -
+        cost_blue * p_donates(blue_mutant, blue_rep, red_rep, 1 - prop_red)
     return SA[payoff_red_mutant, payoff_blue_mutant]
 end
 
@@ -119,7 +117,8 @@ function invader(judge, red::Player, blue::Player, prop_red, utilities)
             judge, red, blue, red_mutant, blue_mutant, prop_red, utilities
         )
         if mutant_strategy != red.rule
-            (payoff_red >= payoff_red_mutant) || return ("red", red, red_mutant)
+            (payoff_red >= payoff_red_mutant) ||
+                return ("red", red.rule, red_mutant.rule, payoff_red, payoff_red_mutant)
         end
         if mutant_strategy != blue.rule
             payoff_blue >= payoff_blue_mutant || return ("blue", blue, blue_mutant)
