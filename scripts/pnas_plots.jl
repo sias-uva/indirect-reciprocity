@@ -213,3 +213,62 @@ let
     end
     fig
 end
+
+let
+    insularity_df = generate_quadrant_df(df; p)
+    info_df = DataFrame([:red_insularity, :blue_insularity] .=> Ref(Float64[]))
+    foreach(eachrow(insularity_df)) do row
+        norm, red_strat, blue_strat, _, red_rep, blue_rep = row
+        judge, red, blue = get_agents(norm, red_strat, blue_strat; p)
+        pRdR = lerp(SA[red(1, 0), red(1, 1)], red_rep)
+        pRdB = lerp(SA[red(0, 0), red(0, 1)], blue_rep)
+        pBdR = lerp(SA[blue(0, 0), blue(0, 1)], red_rep)
+        pBdB = lerp(SA[blue(1, 0), blue(1, 1)], blue_rep)
+        red_insularity = pRdR / (pRdR + pRdB)
+        blue_insularity = pBdB / (pBdB + pBdR)
+        push!(info_df, (red_insularity, blue_insularity))
+    end
+    insularity_df = hcat(insularity_df, info_df)
+    ticks = 0:0.25:1
+    fig = Figure(; resolution=(500, 500))
+    ax = Axis(
+        fig[1, 1];
+        xlabel="Insularity of majority group cooperation",
+        ylabel="Insularity of minority group cooperation",
+        xticks=ticks,
+        yticks=ticks,
+        title="Insularity of cooperation by group\nfor stable combinations",
+        titlealign=:left,
+        aspect=DataAspect()
+    )
+    offset = 0.025
+    lims = (0 - offset, 1 + offset)
+    limits!(ax, lims, lims)
+    cmap = cgrad(:Hiroshige; rev=true)
+    sc = scatter!(
+        ax,
+        insularity_df.red_insularity,
+        insularity_df.blue_insularity;
+        colormap=cmap,
+        color=insularity_df.blue_payoff,
+        strokewidth=1
+    )
+    
+    ## Colorbar
+    Colorbar(fig[1, 2], sc; label="Minority payoff")
+
+    rowsize!(fig.layout, 1, Aspect(1, 1))
+    for filetype in ("pdf", "png")
+        save("./scripts/figures/pnas/insularity_scatter.$filetype", fig)
+    end
+    fig
+end
+
+let
+    subset(
+        df,
+        :is_ess, 
+        :red_strat  => ByRow(!=(0))
+    )
+    quadrant_df = generate_quadrant_df(df; p)
+end
