@@ -14,5 +14,5 @@ For example, someone's name on a job application may be used to qualify an appli
 This work combines the mechanisms of homophily (or more broadly, tag-based cooperation) and indirect reciprocity to see how fair cooperation can be achieved, and the barriers to its realisation that may be present in social systems.
 
 ### Structure of the repository
-- `IR` is a Julia module/package containing all of the core source code to determine the reputations and payoffs in an evolutionary game theory model of tag-based and reputation-based cooperation.
+- `IR` is a Julia module/package containing all of the core source code to determine the reputations and payoffs in an evolutionary game theory model of tag-based and reputation-based cooperation. As the science machine is cranked, this will be made into a stand-alone repository.
 - `scripts` uses the local `IR` package to do the science including exploration, plots, and a whole lot of errors.
