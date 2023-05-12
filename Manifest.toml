@@ -2,7 +2,7 @@
 
 julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "3a176a51d281e8db808e9553fe3bbb41dd494085"
+project_hash = "54f1e50b8a98f5c08ef09b3a1bb6990a2459de12"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "e6103228c92462a331003248fa31f00dcf41c577"
@@ -1849,6 +1849,12 @@ version = "0.1.2"
 [[deps.REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
+
+[[deps.RL]]
+deps = ["Agents", "IR", "StaticArrays"]
+path = "RL"
+uuid = "fdd1d531-360a-4ab3-b39e-89bcb623b2a5"
+version = "0.0.1"
 
 [[deps.Random]]
 deps = ["SHA", "Serialization"]
