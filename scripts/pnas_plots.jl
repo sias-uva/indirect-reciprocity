@@ -5,7 +5,7 @@ using CairoMakie
 using ColorSchemes
 
 begin
-player_execution_mistake_rate = 0.21
+player_execution_mistake_rate = 0.01
 judge_execution_mistake_rate = 0.01
 player_perception_mistake_rate = 0.0
 judge_perception_mistake_rate = 0.0
