@@ -1,8 +1,7 @@
 module RL
 
-export LearningAgent
-
-export whichmax
+export LearningAgent # core
+export whichmax, evaluate # misc
 
 using IR
 using Agents
@@ -22,28 +21,24 @@ end
 LearningAgent(policy::P, ε::E, α::A, group::G, whatever...) where {P,E,A,G} = LearningAgent{P,E,A,G}(policy, ε, α, group, whatever...)
 
 function (la::LearningAgent)(info::SVector)
-    if rand() < la.exploration_probability
-        return rand(Bool)
-    end
-    exploit = (Fix1(mistake, la.ε) ∘ Fix1(evaluate, la.policy) ∘ Fix1(mistake, la.α))(info)
-    return rand() < exploit
+    la.exploration_probability > rand() && return rand(Bool) # Explore
+    prob_coop = (Fix1(mistake, la.ε) ∘ Fix1(evaluate, la.policy) ∘ Fix1(mistake, la.α))(info)
+    return prob_coop > rand()
 end
 (la::LearningAgent)(info...) = la(SA[info...])
 
-function evaluate(policy::P, info) where {T,P<:SArray{Tuple{2,2,2},T}}    
+function evaluate(policy::P, info::SVector{2}) where {T,P<:SArray{Tuple{2,2,2},T}}
     strategy = SArray{NTuple{2,2},T,2,4}(reduce(whichmax, policy; dims=3))
     return lerp(strategy, info)
 end
 
+# Commenting this method out because it's no faster than the above due to a
+# custom lerp implementation for 2×2 SArrays:
+
 # function evaluate(policy::P, info::SVector{2, Bool}) where {T,P<:SArray{Tuple{2,2,2},T}}
-    
-#     maximum(policy[info[1] + 1, info[2] + 1, :])
-#     return lerp(strategy, info)
+#     strategy = SArray{NTuple{2,2},T,2,4}(reduce(whichmax, policy; dims=3))
+#     return strategy[info[1]+1, info[2]+1]
 # end
-
-
 
 end # module
 
-# Difference: Learning on all fronts
-# Make use of the uncertainty in information
