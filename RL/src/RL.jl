@@ -2,10 +2,14 @@ module RL
 
 export LearningAgent
 
+export whichmax
+
 using IR
 using Agents
 using StaticArrays
 using Base: Fix1
+
+whichmax(x, y) = argmax((x, y))-1
 
 @agent LearningAgent{P,E,A,G} NoSpaceAgent begin
     policy::P
@@ -26,10 +30,18 @@ function (la::LearningAgent)(info::SVector)
 end
 (la::LearningAgent)(info...) = la(SA[info...])
 
-function evaluate(policy::P, info) where {T,P<:SArray{Tuple{2,2,2},T}}
-    strategy = SArray{NTuple{2,2},T,2,4}(maximum(policy, dims=3))
+function evaluate(policy::P, info) where {T,P<:SArray{Tuple{2,2,2},T}}    
+    strategy = SArray{NTuple{2,2},T,2,4}(reduce(whichmax, policy; dims=3))
     return lerp(strategy, info)
 end
+
+# function evaluate(policy::P, info::SVector{2, Bool}) where {T,P<:SArray{Tuple{2,2,2},T}}
+    
+#     maximum(policy[info[1] + 1, info[2] + 1, :])
+#     return lerp(strategy, info)
+# end
+
+
 
 end # module
 
