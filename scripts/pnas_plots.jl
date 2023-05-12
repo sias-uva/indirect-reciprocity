@@ -4,7 +4,8 @@ using DataFrames
 using CairoMakie
 using ColorSchemes
 
-player_execution_mistake_rate = 0.01
+begin
+player_execution_mistake_rate = 0.21
 judge_execution_mistake_rate = 0.01
 player_perception_mistake_rate = 0.0
 judge_perception_mistake_rate = 0.0
@@ -126,8 +127,9 @@ let
         )
     end
     rowsize!(fig.layout, 1, Aspect(1, 1))
-    save("./scripts/figures/pnas/coop_fairness_payoff_scatter.pdf", fig)
+    #save("./scripts/figures/pnas/coop_fairness_payoff_scatter.pdf", fig)
     fig
+end
 end
 
 let
@@ -209,7 +211,7 @@ let
     # end
     rowsize!(fig.layout, 1, Aspect(1, 1))
     for filetype in ("pdf", "png")
-        save("./scripts/figures/pnas/coop_each_group_scatter.$filetype", fig)
+        #save("./scripts/figures/pnas/coop_each_group_scatter.$filetype", fig)
     end
     fig
 end
@@ -259,7 +261,7 @@ let
 
     rowsize!(fig.layout, 1, Aspect(1, 1))
     for filetype in ("pdf", "png")
-        save("./scripts/figures/pnas/insularity_scatter.$filetype", fig)
+        #save("./scripts/figures/pnas/insularity_scatter.$filetype", fig)
     end
     fig
 end
@@ -268,7 +270,9 @@ let
     subset(
         df,
         :is_ess, 
-        :red_strat  => ByRow(!=(0))
+        # :red_strat  => ByRow(!=(0))
+        [:red_strat, :blue_strat]  => ByRow((x,y) -> x!=y)
     )
     quadrant_df = generate_quadrant_df(df; p)
+    subset(quadrant_df, :quadrant => ByRow(==(0)))
 end
