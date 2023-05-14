@@ -2,7 +2,7 @@
 
 julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "8088f3fbe90732b6b50c686cebb790e86016711a"
+project_hash = "29f8ebdd13471bd0df16363c6c4b72e87f448ca8"
 
 [[deps.Agents]]
 deps = ["CSV", "DataFrames", "DataStructures", "Distributed", "Distributions", "Downloads", "Graphs", "JLD2", "LazyArtifacts", "LightOSM", "LinearAlgebra", "Pkg", "ProgressMeter", "Random", "Requires", "Rotations", "Scratch", "StaticArrays", "StatsBase"]

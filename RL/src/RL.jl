@@ -1,5 +1,7 @@
 module RL
+using Reexport
 
+@reexport import IR: iNorm
 export LearningAgent, initialise_abm, agent_step!, play_and_learn!, learn! # core
 export whichmax, evaluate # misc
 
@@ -19,6 +21,20 @@ mutable struct LearningAgent{P,E,A,G} <: AbstractAgent
     reputation::Bool
     memory::SVector{3,Bool}
     has_interacted_as_donor::Bool
+    function LearningAgent(
+        id,
+        policy::P,
+        ε::E,
+        α::A,
+        group::G,
+        reputation,
+        memory=SVector{3,Bool}(true, true, true),
+        has_interacted_as_donor=false,
+    ) where {P,E,A,G}
+        return new{P,E,A,G}(
+            id, policy, ε, α, group, reputation, memory, has_interacted_as_donor
+        )
+    end
 end
 
 function evaluate(policy::P, info::SVector{2}) where {T,P<:SArray{Tuple{2,2,2},T}}
@@ -52,10 +68,13 @@ function play_and_learn!((donor, recipient)::NTuple{2,LearningAgent}, model)
     judgement = model.judge(SA[is_same_group, is_good, outcome]) > rand()
     donor.reputation = judgement
     donor.memory = SA[perceived_info..., outcome]
+    # Agents learn whether or not there was a donation, utilities adjusted
+    # accordingly. No donation => no cost, no benefit but decay of corresponding
+    # Q-value still takes place.
     cost = donor.group ? model.utilities[4] : model.utilities[3]
-    learn!(donor, -cost, model)
+    learn!(donor, outcome * -cost, model)
     benefit = donor.group ? model.utilities[2] : model.utilities[1]
-    learn!(recipient, benefit, model)
+    learn!(recipient, outcome * benefit, model)
     return nothing
 end
 
