@@ -28,11 +28,11 @@ end
 
 function agent_step!(donor::LearningAgent, model)
     recipient_id = let
-        i = rand(1:(nagents(model)-1))
+        i = rand(1:(nagents(model) - 1))
         i < donor.id ? i : i + 1
     end
     recipient = model[recipient_id]
-    play_and_learn!((donor, recipient), model)
+    return play_and_learn!((donor, recipient), model)
 end
 
 function play_and_learn!((donor, recipient)::NTuple{2,LearningAgent}, model)
@@ -68,7 +68,7 @@ function learn!(la::LearningAgent, utility, model)
     old_policy = la.policy
     new_q = (1 - ϕ) * old_policy[idx...] + ϕ * utility
     # @show idx
-    linear_idx = interaction[1] + 2*interaction[2] + 4*interaction[3] + 1
+    linear_idx = interaction[1] + 2 * interaction[2] + 4 * interaction[3] + 1
     la.policy = setindex(old_policy, new_q, linear_idx)
     return nothing
 end
@@ -89,18 +89,24 @@ function initialise_abm(;
 )
     judge = Agent(norm, judge_em, judge_pm)
     properties = (; judge, utilities, learning_rate, exploration_rate)
-    example_agent = LearningAgent(-1, rand(SArray{Tuple{2,2,2},Float64,3,8}), red_em, red_pm, true, true, SA[false, false, false], false)
+    example_strategy = rand(SArray{Tuple{2,2,2},Float64,3,8})
+    example_agent = LearningAgent(
+        -1, example_strategy, red_em, red_pm, true, true, SA[false, false, false], false
+    )
     model = UnremovableABM(
-        typeof(example_agent);
-        properties,
-        scheduler=Schedulers.Randomly())
+        typeof(example_agent); properties, scheduler=Schedulers.Randomly()
+    )
     for n in 1:n_agents
         if n < n_agents * proportion_incumbents_red
             policy = rand(SArray{Tuple{2,2,2},Float64,3,8}) * (utilities[1] - utilities[3]) # Scale by utility range
-            abm_agent = LearningAgent(n, policy, red_em, red_pm, true, true, SA[false, false, false], false)
+            abm_agent = LearningAgent(
+                n, policy, red_em, red_pm, true, true, SA[false, false, false], false
+            )
         else
             policy = rand(SArray{Tuple{2,2,2},Float64,3,8}) * (utilities[2] - utilities[4]) # Scale by utility range
-            abm_agent = LearningAgent(n, policy, blue_em, blue_pm, false, true, SA[false, false, false], false)
+            abm_agent = LearningAgent(
+                n, policy, blue_em, blue_pm, false, true, SA[false, false, false], false
+            )
         end
         add_agent!(abm_agent, model)
     end
