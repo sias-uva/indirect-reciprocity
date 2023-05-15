@@ -1836,7 +1836,7 @@ deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
 [[deps.RL]]
-deps = ["Agents", "IR", "StaticArrays"]
+deps = ["Agents", "IR", "Reexport", "StaticArrays"]
 path = "RL"
 uuid = "fdd1d531-360a-4ab3-b39e-89bcb623b2a5"
 version = "0.0.1"

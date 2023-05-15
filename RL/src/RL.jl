@@ -42,6 +42,7 @@ function evaluate(policy::P, info::SVector{2}) where {T,P<:SArray{Tuple{2,2,2},T
     return lerp(strategy, info)
 end
 
+# agent_step! can also trigger a segfault! what joy!
 function agent_step!(donor::LearningAgent, model)
     recipient_id = let
         i = rand(1:(nagents(model) - 1))
@@ -71,6 +72,8 @@ function play_and_learn!((donor, recipient)::NTuple{2,LearningAgent}, model)
     # Agents learn whether or not there was a donation, utilities adjusted
     # accordingly. No donation => no cost, no benefit but decay of corresponding
     # Q-value still takes place.
+    # println("Learning")
+    # println("Donor $(donor.id) donated to $(recipient.id)? ", outcome)
     cost = donor.group ? model.utilities[4] : model.utilities[3]
     learn!(donor, outcome * -cost, model)
     benefit = donor.group ? model.utilities[2] : model.utilities[1]
@@ -92,6 +95,8 @@ function learn!(la::LearningAgent, utility, model)
     return nothing
 end
 
+# You can trigger a segfault with this function sometimes lol, the reason is
+# contained within!
 function initialise_abm(;
     n_agents=50,
     norm,
