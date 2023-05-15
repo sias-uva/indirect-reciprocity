@@ -15,7 +15,10 @@ For example, someone's name on a job application may be used to qualify an appli
 
 This work combines the mechanisms of homophily (or more broadly, tag-based cooperation) and indirect reciprocity to see how fair cooperation can be achieved, and the barriers to its realisation that may be present in social systems.
 
-### Structure of the repository
+### Papers and presentations related to this project
+- The visionary/future outlook paper [Learning Fair Cooperation in Systems of Indirect Reciprocity](https://alaworkshop2023.github.io/papers/ALA2023_paper_53.pdf) has been accepted to the [Adaptive and Learning Agents workshop](https://alaworkshop2023.github.io) at [AAMAS2023](https://aamas2023.soton.ac.uk/).
+
+## Structure of the repository
 This is a "monorepo" containing two Julia modules `IR` and `RL`.
 - `IR` contains the core source code to determine the reputations and payoffs in an evolutionary game theory (EGT) model of tag-based and reputation-based cooperation. As the science machine is cranked, this will be made into a stand-alone repository.
 - `RL` uses `IR`'s definition of `Norm`, `Agent`, and its linear interpolation functions `lerp` and `mistake` to define a basic agent-based model representation of `IR`'s EGT model with Q-learning in place of "social learning".
