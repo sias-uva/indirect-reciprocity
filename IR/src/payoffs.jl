@@ -88,6 +88,12 @@ function payoffs(judge, red, blue, red_mutant, blue_mutant, prop_red, utilities)
     return payoffs(red, blue, red_mutant, blue_mutant, reputations..., prop_red, utilities)
 end
 
+"""
+    is_ESS(judge, red::Player, blue::Player, prop_red, utilities)
+
+Determines whether the system specified by arguments is an evolutionaily stable
+state.
+"""
 function is_ESS(judge, red::Player, blue::Player, prop_red, utilities)
     for i in 0:15
         mutant_strategy = SMatrix{2,2,Bool}(i >> shift & 1 != 0 for shift in 0:3)

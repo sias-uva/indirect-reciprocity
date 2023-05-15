@@ -8,6 +8,13 @@ struct Agent{N,A,B,C,SA<:SArray{NTuple{N,2},A}}
     end
 end
 
+"""
+    (a::Agent)(info::SVector)
+
+Calling an Agent (`a`) tells it to perceive the information (`info`) given, determine its
+action, and execute it. The perception and execution parts of this process are
+subject to errors `a.ε` and `a.α`.
+"""
 function (a::Agent)(info::SVector)
     return (Fix1(mistake, a.ε) ∘ Fix1(lerp, a.rule) ∘ Fix1(mistake, a.α))(info)
 end
