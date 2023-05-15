@@ -2,7 +2,7 @@
 
 julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "29f8ebdd13471bd0df16363c6c4b72e87f448ca8"
+project_hash = "ed475c6966d12cb427e36a82acaf00f2da0190a9"
 
 [[deps.Agents]]
 deps = ["CSV", "DataFrames", "DataStructures", "Distributed", "Distributions", "Downloads", "Graphs", "JLD2", "LazyArtifacts", "LightOSM", "LinearAlgebra", "Pkg", "ProgressMeter", "Random", "Requires", "Rotations", "Scratch", "StaticArrays", "StatsBase"]
@@ -197,7 +197,7 @@ uuid = "34004b35-14d8-5ef3-9330-4cdb6864b03a"
 version = "0.3.16"
 
 [[deps.IR]]
-deps = ["LinearAlgebra", "StaticArrays"]
+deps = ["LinearAlgebra", "PrecompileTools", "StaticArrays"]
 path = "../IR"
 uuid = "868e5eac-1965-4918-a7a0-2c50dd7412dd"
 version = "0.0.1"

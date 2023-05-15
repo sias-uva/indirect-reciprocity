@@ -1,11 +1,11 @@
 module RL
 using Reexport
 
-@reexport import IR: iNorm
 export LearningAgent, initialise_abm, agent_step!, play_and_learn!, learn! # core
 export whichmax, evaluate # misc
 
-using IR
+@reexport import IR: iNorm
+using IR: lerp, mistake, Norm, Agent
 using Agents
 using StaticArrays
 using Base: Fix1
@@ -153,5 +153,28 @@ end
 # end
 
 # TODO: add rng as argument?
+
+# Precompilation
+using PrecompileTools
+@compile_workload begin
+    abm = initialise_abm(;
+        n_agents=50,
+        norm=iNorm(195),
+        red_pm=SA[0.0, 0.0],
+        red_em=0.01,
+        blue_pm=SA[0.0, 0.0],
+        blue_em=0.01,
+        judge_pm=SA[0.0, 0.0, 0.0],
+        judge_em=0.01,
+        utilities=SA[2.0, 2.0, 1.0, 1.0],
+        learning_rate=0.01,
+        exploration_rate=0.01,
+        proportion_incumbents_red=0.9,
+    )
+    for step in 1:10
+        donor = abm.agents[rand(1:nagents(abm))]
+        agent_step!(donor, abm)
+    end
+end
 
 end # module
