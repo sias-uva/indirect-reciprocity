@@ -9,6 +9,13 @@ PrecompileTools = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
+[compat]
+julia = "1.9"
+Agents = "5.14.0"
+PrecompileTools = "1.1.1"
+Reexport = "1.2.2"
+StaticArrays = "1.5.25"
+
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 

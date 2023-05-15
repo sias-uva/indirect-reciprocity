@@ -156,6 +156,7 @@ end
 
 # Precompilation
 using PrecompileTools
+
 @compile_workload begin
     abm = initialise_abm(;
         n_agents=50,
