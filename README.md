@@ -3,6 +3,8 @@
 This repository contains the source code for my work on the (algorithmic) game theory topic of indirect reciprocity: a mechanism for encouraging cooperation between self-interested agents.
 My work focuses on the interplay between cooperation and fairness, investigating how we can engineer systems of indirect reciprocity, whether artificial or otherwise, to achieve fair, socially desirable outcomes.
 
+The repository will receive updates following the formal publication of any future work on the topic.
+
 If this is your first time looking at a Julia repository, read the [New to Julia?](#new-to-julia) section for guidance on where and how to find what you're looking for.
 
 ### What is indirect reciprocity?
