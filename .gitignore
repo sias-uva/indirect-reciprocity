@@ -1,0 +1,9 @@
+JuliaSysimage.dylib
+.DS_Store
+
+# Unreasonably large number of figures:
+projects/aamas/figures/prevalence-heatmap/*
+
+# Sysimages
+BaseSysimage.dylib
+JuliaSysimage.dylib
