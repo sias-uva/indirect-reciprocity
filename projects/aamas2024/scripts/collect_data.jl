@@ -13,7 +13,6 @@ using IRUtils
 
 include("rl-functions.jl")
 
-
 ##% Construct output containers
 output = DataFrame(
     :seed => Int[], :norm => Int[], :cooperation => Float64[], :fairness => Float64[]
@@ -98,7 +97,4 @@ for norm in loop_norms
     end
 end
 
-CSV.write(
-    "projects/aamas2024/data/rl_data.csv",
-    output,
-)
+CSV.write("projects/aamas2024/data/rl_data.csv", output)
