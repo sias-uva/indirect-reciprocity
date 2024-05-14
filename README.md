@@ -18,7 +18,7 @@ For example, someone's name on a job application may be used to qualify an appli
 This work combines the mechanisms of homophily (or more broadly, tag-based cooperation) and indirect reciprocity to see how fair cooperation can be achieved, and the barriers to its realisation that may be present in social systems.
 
 ### Papers and presentations related to this project
-- The visionary/future outlook paper [Learning Fair Cooperation in Systems of Indirect Reciprocity](https://alaworkshop2023.github.io/papers/ALA2023_paper_53.pdf) has been accepted to the [Adaptive and Learning Agents workshop](https://alaworkshop2023.github.io) at [AAMAS2023](https://aamas2023.soton.ac.uk/).
+- The extended abstract [Fairness and Cooperation between Independent Reinforcement Learners through Indirect Reciprocity](https://dl.acm.org/doi/10.5555/3635637.3663196) presented at [AAMAS 2024](https://www.aamas2024-conference.auckland.ac.nz/).
 
 ## Structure of the repository
 This is a "monorepo" with the `packages` folder containing three Julia modules `IR` and `RL`, `IRUtils`.
