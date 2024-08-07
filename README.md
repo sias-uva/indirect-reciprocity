@@ -18,7 +18,9 @@ For example, someone's name on a job application may be used to qualify an appli
 This work combines the mechanisms of homophily (or more broadly, tag-based cooperation) and indirect reciprocity to see how fair cooperation can be achieved, and the barriers to its realisation that may be present in social systems.
 
 ### Papers and presentations related to this project
-- The visionary/future outlook paper [Learning Fair Cooperation in Systems of Indirect Reciprocity](https://alaworkshop2023.github.io/papers/ALA2023_paper_53.pdf) has been accepted to the [Adaptive and Learning Agents workshop](https://alaworkshop2023.github.io) at [AAMAS2023](https://aamas2023.soton.ac.uk/).
+- The main track paper [Learning Fair Cooperation in Mixed-Motive Games with Indirect Reciprocity
+](https://www.ijcai.org/proceedings/2024/25) presented at [IJCAI 2024](https://ijcai24.org/). Supplementary material can be found in the version of the paper uploaded to arXiv at this link.
+- The extended abstract [Fairness and Cooperation between Independent Reinforcement Learners through Indirect Reciprocity](https://dl.acm.org/doi/10.5555/3635637.3663196) presented at [AAMAS 2024](https://www.aamas2024-conference.auckland.ac.nz/).
 
 ## Structure of the repository
 This is a "monorepo" with the `packages` folder containing three Julia modules `IR` and `RL`, `IRUtils`.
@@ -32,6 +34,7 @@ Inside each `projects` subfolder, there will be specific instructions on how to 
 These instructions assume that Julia is installed and all the required packages are available.
 To do this:
 1. Install Julia with [juliaup](https://github.com/JuliaLang/juliaup) or otherwise.
+    a. Until `Pkg` is updated, delete IR, RL, and IRUtils (and their `[compat]` entries) from the Project.toml and run `]dev --local packages/IR packages/RL packages/IRUtils`.
 2. Install the required packages by opening Julia with this repository as its home directory, and running 
 ```julia
 using Pkg; Pkg.activate("."); Pkg.instantiate()
