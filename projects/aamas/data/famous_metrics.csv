@@ -1,0 +1,17 @@
+In-norm,Out-norm,Mi-strat,Mo-strat,mi-strat,mo-strat,Cooperation (EGT),Cooperation (RL),Fairness (EGT),Fairness (RL)
+Sh,Sh,Disc,Disc,Disc,Disc,0.332,0.118,1.0,0.917
+Sh,SJ,Disc,Disc,Disc,Disc,0.849,0.532,0.848,0.609
+Sh,IS,AllC,Disc,AllD,AllD,0.766,0.456,0.748,0.502
+Sh,SS,Disc,Disc,Disc,Disc,0.849,0.48,0.848,0.596
+SJ,Sh,Disc,Disc,Disc,Disc,0.965,0.718,0.981,0.727
+SJ,SJ,Disc,Disc,Disc,Disc,0.971,0.652,1.0,0.909
+SJ,IS,AllC,Disc,AllD,AllD,0.875,0.599,0.871,0.541
+SJ,SS,Disc,Disc,Disc,Disc,0.971,0.61,1.0,0.541
+IS,Sh,AllD,AllD,AllD,AllD,0.0,0.106,1.0,0.727
+IS,SJ,AllD,AllD,AllD,AllD,0.0,0.0948,1.0,0.74
+IS,IS,AllD,AllD,AllD,AllD,0.0,0.0996,1.0,0.712
+IS,SS,AllD,AllD,AllD,AllD,0.0,0.0929,1.0,0.737
+SS,Sh,Disc,Disc,Disc,Disc,0.965,0.161,0.981,0.756
+SS,SJ,Disc,Disc,Disc,Disc,0.971,0.132,1.0,0.747
+SS,IS,AllC,Disc,AllD,AllD,0.875,0.108,0.871,0.741
+SS,SS,Disc,Disc,Disc,Disc,0.971,0.0904,1.0,0.741

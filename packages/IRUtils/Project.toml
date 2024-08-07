@@ -1,0 +1,15 @@
+name = "IRUtils"
+uuid = "bf489392-4680-4cd8-adb6-5d2ecf39e057"
+authors = ["jacobusmmsmit <jacobusmmsmit@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+IR = "868e5eac-1965-4918-a7a0-2c50dd7412dd"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
+[compat]
+DataFrames = "1.6.1"
+IR = "0.0.2"
+StaticArrays = "1.7.0"
+julia = "1.9"

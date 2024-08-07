@@ -1,0 +1,24 @@
+name = "RL"
+uuid = "fdd1d531-360a-4ab3-b39e-89bcb623b2a5"
+version = "0.0.1"
+
+[deps]
+Agents = "46ada45e-f475-11e8-01d0-f70cc89e6671"
+IR = "868e5eac-1965-4918-a7a0-2c50dd7412dd"
+PrecompileTools = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
+[compat]
+Agents = "5.17.1"
+IR = "0.0.2"
+PrecompileTools = "1.2"
+Reexport = "1.2.2"
+StaticArrays = "1.7.0"
+julia = "1.9"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
