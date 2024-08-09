@@ -19,7 +19,7 @@ This work combines the mechanisms of homophily (or more broadly, tag-based coope
 
 ### Papers and presentations related to this project
 - The main track paper [Learning Fair Cooperation in Mixed-Motive Games with Indirect Reciprocity
-](https://www.ijcai.org/proceedings/2024/25) presented at [IJCAI 2024](https://ijcai24.org/). Supplementary material can be found in the version of the paper uploaded to arXiv at this link.
+](https://www.ijcai.org/proceedings/2024/25) presented at [IJCAI 2024](https://ijcai24.org/). Supplementary material can be found in the version of the paper uploaded to arXiv at [this link](https://arxiv.org/abs/2408.04549).
 - The extended abstract [Fairness and Cooperation between Independent Reinforcement Learners through Indirect Reciprocity](https://dl.acm.org/doi/10.5555/3635637.3663196) presented at [AAMAS 2024](https://www.aamas2024-conference.auckland.ac.nz/).
 
 ## Structure of the repository
